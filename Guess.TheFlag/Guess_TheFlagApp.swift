@@ -12,6 +12,7 @@ struct Guess_TheFlagApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+            
         }
     }
 }
