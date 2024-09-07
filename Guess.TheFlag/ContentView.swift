@@ -13,13 +13,17 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var countries = ["Estonia", "France","Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
+    
     @State private var correctAnswer = Int.random(in: 0...2)
     @State private var showingScore = false
     @State private var scoreTitle = ""
+    
     @State private var currentScore = 0
     @State private var countryIndex = 0
     @State private var questionRounds = 0
     @State private var gameOver = false
+    
+    
     var body: some View {
         ZStack{
             RadialGradient(stops:[
@@ -78,15 +82,15 @@ struct ContentView: View {
         } message: {
     Text("Your score is \(currentScore)")
         }
-        .alert("Game Over! Final Score:\(currentScore)", isPresented: $gameOver){
-                    Button("Try again", action: resetGame)
-            
-        
-        
-                }
+        .alert("Game Over!", isPresented: $gameOver){
+                    Button("Restart", action: resetGame)
+        } message: {
+            Text("Final Score: \(currentScore) / 8")
+        }
   
     }
         func flagTapped(_ number: Int){
+            questionRounds += 1
             if number == correctAnswer{
                 scoreTitle = "Correct"
                 currentScore += 1
@@ -97,7 +101,6 @@ struct ContentView: View {
             showingScore = true
         }
         func askQuestion(){
-            questionRounds += 1
             countries.shuffle()
             correctAnswer = Int.random(in: 0...2)
         }
@@ -107,10 +110,7 @@ struct ContentView: View {
                     askQuestion()
                 } else if questionRounds == 8 {
                     gameOver = true
-                    resetGame()
                 }
-
-
             }
         
     }
