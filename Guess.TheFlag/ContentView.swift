@@ -11,6 +11,35 @@
 
 import SwiftUI
 
+struct TitleFont: ViewModifier{
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle).bold()
+            .foregroundColor(.black)
+            .clipShape(.rect(cornerRadius: 10))
+    }
+}
+
+extension View {
+    func titleStyle() -> some View{
+        modifier(TitleFont())
+    }
+}
+
+
+
+struct ImageFlag: View{ // this struct will have all the modifiers for the flag image. Don't need to write the code over and over.
+    
+    var img: ImageResource // What is going to show
+    
+    var body: some View{
+        Image(img)
+            .clipShape(.capsule)
+            .shadow(radius: 5)
+    }
+}
+
+
 struct ContentView: View {
     @State private var countries = ["Estonia", "France","Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
     
@@ -47,7 +76,7 @@ struct ContentView: View {
                             .font(.subheadline.weight(.heavy))
                         
                         Text(countries[correctAnswer])
-                            .font(.largeTitle.weight(.semibold))
+                            .titleStyle()
                         
                     }
                     
@@ -55,9 +84,9 @@ struct ContentView: View {
                         Button {
                             flagTapped(number)
                         } label: {
-                            Image(countries[number])
-                                .clipShape(.capsule)
-                                .shadow(radius: 5)
+                            ImageFlag(img: ImageResource(name: countries[number], bundle: .main))
+//                            Image(countries[number])
+                                
                         }
                     }
                 }
