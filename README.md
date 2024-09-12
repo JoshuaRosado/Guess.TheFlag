@@ -1,0 +1,1 @@
+A game of guessing the flag. Giving 3 options for the user to pick the correct flag for the given country. A limit of 8 rounds, storing score and letting the user know what country was selected when selecting the incorrect option.
