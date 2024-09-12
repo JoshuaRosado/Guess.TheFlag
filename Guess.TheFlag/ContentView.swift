@@ -85,7 +85,7 @@ struct ContentView: View {
                             flagTapped(number)
                         } label: {
                             ImageFlag(img: ImageResource(name: countries[number], bundle: .main))
-//                            Image(countries[number])
+//
                                 
                         }
                     }
