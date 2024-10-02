@@ -102,6 +102,7 @@ struct ContentView: View {
                         {
                             flagTapped(number)
                             withAnimation{
+                                // need to add this animation to the flag tapped, not all of them.
                                 animation360 += 360
                                 
                             }
@@ -153,7 +154,6 @@ struct ContentView: View {
             questionRounds += 1
             if number == correctAnswer{
                 scoreTitle = "Correct"
-                animation360 += 360
                 currentScore += 1
             } else {
                 countryIndex = number
