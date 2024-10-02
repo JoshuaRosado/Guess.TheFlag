@@ -26,6 +26,21 @@ extension View {
     }
 }
 
+struct AnimationEffect: ViewModifier{
+    let animation360 : Double
+    func body(content: Content) -> some View {
+        content
+            .rotation3DEffect(.degrees(animation360), axis: (x: 1, y: 1, z: 2))
+    }
+}
+
+extension View{
+    func animating() -> some View{
+        modifier(AnimationEffect(animation360: 360))
+    }
+}
+
+
 
 
 struct ImageFlag: View{ // this struct will have all the modifiers for the flag image. Don't need to write the code over and over.
@@ -46,11 +61,12 @@ struct ContentView: View {
     @State private var correctAnswer = Int.random(in: 0...2)
     @State private var showingScore = false
     @State private var scoreTitle = ""
-    
+    @State private var flagTapped = false
     @State private var currentScore = 0
     @State private var countryIndex = 0
     @State private var questionRounds = 0
     @State private var gameOver = false
+    @State private var animation360 = 0.0
     
     
     var body: some View {
@@ -78,18 +94,30 @@ struct ContentView: View {
                         Text(countries[correctAnswer])
                             .titleStyle()
                         
+                        
                     }
                     
                     ForEach(0..<3) { number in
-                        Button {
+                        Button
+                        {
                             flagTapped(number)
-                        } label: {
-                            ImageFlag(img: ImageResource(name: countries[number], bundle: .main))
-//
+                            withAnimation{
+                                animation360 += 360
+                                
+                            }
+                        }
+                        
+                        label: {
+                            ImageFlag(img: ImageResource(name: countries[number],  bundle: .main))
                                 
                         }
+                        .rotation3DEffect(.degrees(animation360), axis: (x: 1, y: 1, z: 2))
+                        
                     }
+                    
                 }
+                
+                
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 20)
                 .background(.regularMaterial)
@@ -118,10 +146,14 @@ struct ContentView: View {
         }
   
     }
+    
+
+
         func flagTapped(_ number: Int){
             questionRounds += 1
             if number == correctAnswer{
                 scoreTitle = "Correct"
+                animation360 += 360
                 currentScore += 1
             } else {
                 countryIndex = number
