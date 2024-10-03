@@ -26,19 +26,17 @@ extension View {
     }
 }
 
-struct anim360: ViewModifier{
+struct animationAdded: ViewModifier{
+    var flagTapped : Bool
+    var animation360: Double
     func body(content: Content) -> some View {
-        content
-            .rotation3DEffect(.degrees(360), axis: (x: 1, y: 1, z: 2))
+        if flagTapped == true{
+            content
+            .rotation3DEffect(.degrees(animation360), axis: (x: 4, y: 0, z: 0))
+        }
+        
     }
 }
-
-extension View {
-    func rotation() -> some View{
-        modifier(anim360())
-    }
-}
-
 
 
 
@@ -68,6 +66,8 @@ struct ContentView: View {
     @State private var questionRounds = 0
     @State private var gameOver = false
     @State private var animation360 = 0.0
+    @State private var noFade = 1.0
+    @State private var fadeAnimation = 1.0
     
     
     var body: some View {
@@ -101,17 +101,23 @@ struct ContentView: View {
                     ForEach(0..<3) { number in
                         Button
                         {
+                            flagTapped(number)
+                            flagTapped = true
+                            print("\(number)\(flagTapped)")
                             print("Button \(number) was tapped")
                             animation360 += 360
-                            flagTapped(number)
                             
                         }
+
+                        
                         
                         label: {
                             ImageFlag(img: ImageResource(name: countries[number],  bundle: .main)).rotation3DEffect(.degrees(animation360), axis: (x: 0, y: 1, z: 0))
                         }
-   
+                        
+                    
                     }
+                    
                     
                 }
                 
@@ -145,19 +151,15 @@ struct ContentView: View {
   
     }
     
-//    func BtnSelected(number: Int){
-//        if number == number.
-//    }
+
 
         func flagTapped(_ number: Int){
             questionRounds += 1
             if number == correctAnswer{
-                flagTapped = true
                 scoreTitle = "Correct"
                 currentScore += 1
             } else {
                 countryIndex = number
-                flagTapped = true
                 scoreTitle = "Wrong!, That's the flag of \(countries[countryIndex])  "
             }
             showingScore = true
