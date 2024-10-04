@@ -26,32 +26,6 @@ extension View {
     }
 }
 
-struct AnimationTapped: ViewModifier {
-    var flagWasTapped: Bool
-    var animation360: Double
-    var fadeOut : Double
-    
-    func body(content: Content) -> some View {
-        if flagWasTapped{
-            content
-                .rotation3DEffect(.degrees(animation360), axis: (x: 0, y: 1, z: 0))
-        } else {
-            content
-                .opacity(fadeOut)
-                .rotation3DEffect(.degrees(0), axis: (x: 0, y: 1, z: 0))
-        }
-        
-    }
-}
-
-extension View {
-    func animationTap(flagWasTapped: Bool, animation360: Double, fadeOut: Double) -> some View {
-        modifier(AnimationTapped(flagWasTapped: flagWasTapped, animation360: animation360, fadeOut: fadeOut))
-    }
-}
-
-    
-    
 
 
 
@@ -82,8 +56,7 @@ struct ContentView: View {
     @State private var questionRounds = 0
     @State private var gameOver = false
     @State private var animation360 = 0.0
-    @State private var fadeOut = 0.25
-    @State private var fadeAnimation = 1.0
+    @State private var fadeOut = 1.0
     
     
     var body: some View {
@@ -113,35 +86,31 @@ struct ContentView: View {
                         
                         
                     }
-                    
-                    ForEach(0..<3) { number in
-                        Button{
-                            
-                            flagTapped(number)
-                            flagWasTapped = true
-                            animation360 += 360
-                            fadeOut = flagWasTapped ? 1 : 0.25
-                            
-                            
-                        }
-
                         
                         
-                            label: {
-                                ImageFlag(img: ImageResource(name: countries[number],  bundle: .main))/*.rotation3DEffect(.degrees(animation360), axis: (x: 0, y: 1, z: 0)).opacity(flagWasTapped ? 1.0 : 0.25)*/.animationTap(flagWasTapped: flagWasTapped, animation360:animation360, fadeOut: fadeOut)
-                                
+                        ForEach(0..<3) { number in
+                            Button{
+                                    flagTapped(number)
+                                    flagWasTapped = true
+                                if !flagWasTapped {
+                                    fadeOut = 0.25
                                     
+                                } else {
+                                    animation360 += 360
+                                    fadeOut = 1
+                                }
+                                
+                            }
                             
+                            label: {
+                                ImageFlag(img: ImageResource(name: countries[number],  bundle: .main)).rotation3DEffect(.degrees(animation360), axis: (x: 0, y: 1, z: 0))
+                                    .opacity(fadeOut)
+                            }
                             
                         }
-                        
-                        
-                    
                     }
-                    
-                    
-                    
-                }
+                
+                
                 
                 
                 .frame(maxWidth: .infinity)
@@ -189,6 +158,7 @@ struct ContentView: View {
         func askQuestion(){
             countries.shuffle()
             correctAnswer = Int.random(in: 0...2)
+            flagWasTapped = false
         }
         func gameLimit(){
             for _ in 1..<9{
