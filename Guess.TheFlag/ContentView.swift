@@ -26,17 +26,33 @@ extension View {
     }
 }
 
-struct animationAdded: ViewModifier{
-    var flagTapped : Bool
+struct AnimationTapped: ViewModifier {
+    var flagWasTapped: Bool
     var animation360: Double
+    var fadeOut : Double
+    
     func body(content: Content) -> some View {
-        if flagTapped == true{
+        if flagWasTapped{
             content
-            .rotation3DEffect(.degrees(animation360), axis: (x: 4, y: 0, z: 0))
+                .rotation3DEffect(.degrees(animation360), axis: (x: 0, y: 1, z: 0))
+        } else {
+            content
+                .opacity(fadeOut)
+                .rotation3DEffect(.degrees(0), axis: (x: 0, y: 1, z: 0))
         }
         
     }
 }
+
+extension View {
+    func animationTap(flagWasTapped: Bool, animation360: Double, fadeOut: Double) -> some View {
+        modifier(AnimationTapped(flagWasTapped: flagWasTapped, animation360: animation360, fadeOut: fadeOut))
+    }
+}
+
+    
+    
+
 
 
 
@@ -60,13 +76,13 @@ struct ContentView: View {
     @State private var correctAnswer = Int.random(in: 0...2)
     @State private var showingScore = false
     @State private var scoreTitle = ""
-    @State private var flagTapped = false
+    @State private var flagWasTapped = false
     @State private var currentScore = 0
     @State private var countryIndex = 0
     @State private var questionRounds = 0
     @State private var gameOver = false
     @State private var animation360 = 0.0
-    @State private var noFade = 1.0
+    @State private var fadeOut = 0.25
     @State private var fadeAnimation = 1.0
     
     
@@ -99,24 +115,30 @@ struct ContentView: View {
                     }
                     
                     ForEach(0..<3) { number in
-                        Button
-                        {
+                        Button{
+                            
                             flagTapped(number)
-                            flagTapped = true
-                            print("\(number)\(flagTapped)")
-                            print("Button \(number) was tapped")
+                            flagWasTapped = true
                             animation360 += 360
+                            fadeOut = flagWasTapped ? 1 : 0.25
+                            
                             
                         }
 
                         
                         
-                        label: {
-                            ImageFlag(img: ImageResource(name: countries[number],  bundle: .main)).rotation3DEffect(.degrees(animation360), axis: (x: 0, y: 1, z: 0))
+                            label: {
+                                ImageFlag(img: ImageResource(name: countries[number],  bundle: .main))/*.rotation3DEffect(.degrees(animation360), axis: (x: 0, y: 1, z: 0)).opacity(flagWasTapped ? 1.0 : 0.25)*/.animationTap(flagWasTapped: flagWasTapped, animation360:animation360, fadeOut: fadeOut)
+                                
+                                    
+                            
+                            
                         }
+                        
                         
                     
                     }
+                    
                     
                     
                 }
