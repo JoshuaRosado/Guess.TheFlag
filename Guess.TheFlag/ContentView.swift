@@ -30,8 +30,6 @@ extension View {
 
 
 
-
-
 struct ImageFlag: View{ // this struct will have all the modifiers for the flag image. Don't need to write the code over and over.
     
     var img: ImageResource // What is going to show
@@ -88,35 +86,37 @@ struct ContentView: View {
                     }
                         
                         
-                        ForEach(0..<3) { number in
+                    ForEach(0..<3) { number in
+                        
                             Button{
-                                    flagTapped(number)
-                                    flagWasTapped = true
-                                if !flagWasTapped {
-                                    fadeOut = 0.25
-                                    
-                                } else {
-                                    animation360 += 360
-                                    fadeOut = 1
-                                }
+                                flagWasTapped = true
+                                flagTapped(number)
+                                animation360 += 360
+                                fadeOut += 1
+                                
+                                
                                 
                             }
                             
                             label: {
-                                ImageFlag(img: ImageResource(name: countries[number],  bundle: .main)).rotation3DEffect(.degrees(animation360), axis: (x: 0, y: 1, z: 0))
-                                    .opacity(fadeOut)
+                                ImageFlag(img: ImageResource(name: countries[number],  bundle: .main)).rotation3DEffect(.degrees(animation360), axis: (x: 0, y: 1, z: 0)).opacity(flagWasTapped ? fadeOut:0.50)
+                                
                             }
                             
+                            
+                            
                         }
+                    
                     }
                 
                 
                 
                 
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 20)
+                .padding(.vertical, 30)
                 .background(.regularMaterial)
                 .clipShape(.rect(cornerRadius: 20))
+                
                 
                 Spacer()
                 Spacer()
@@ -143,7 +143,6 @@ struct ContentView: View {
     }
     
 
-
         func flagTapped(_ number: Int){
             questionRounds += 1
             if number == correctAnswer{
@@ -158,7 +157,6 @@ struct ContentView: View {
         func askQuestion(){
             countries.shuffle()
             correctAnswer = Int.random(in: 0...2)
-            flagWasTapped = false
         }
         func gameLimit(){
             for _ in 1..<9{
