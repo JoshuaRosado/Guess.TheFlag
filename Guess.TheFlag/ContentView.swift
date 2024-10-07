@@ -30,6 +30,9 @@ extension View {
 
 
 
+
+
+
 struct ImageFlag: View{ // this struct will have all the modifiers for the flag image. Don't need to write the code over and over.
     
     var img: ImageResource // What is going to show
@@ -45,16 +48,15 @@ struct ImageFlag: View{ // this struct will have all the modifiers for the flag 
 struct ContentView: View {
     @State private var countries = ["Estonia", "France","Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
     
+    @State private var flagSelected = -1
     @State private var correctAnswer = Int.random(in: 0...2)
     @State private var showingScore = false
     @State private var scoreTitle = ""
-    @State private var flagWasTapped = false
     @State private var currentScore = 0
     @State private var countryIndex = 0
     @State private var questionRounds = 0
     @State private var gameOver = false
     @State private var animation360 = 0.0
-    @State private var fadeOut = 1.0
     
     
     var body: some View {
@@ -89,17 +91,18 @@ struct ContentView: View {
                     ForEach(0..<3) { number in
                         
                             Button{
-                                flagWasTapped = true
                                 flagTapped(number)
                                 animation360 += 360
-                                fadeOut += 1
-                                
-                                
-                                
+                     
                             }
-                            
                             label: {
-                                ImageFlag(img: ImageResource(name: countries[number],  bundle: .main)).rotation3DEffect(.degrees(animation360), axis: (x: 0, y: 1, z: 0)).opacity(flagWasTapped ? fadeOut:0.50)
+                                ImageFlag(img: ImageResource(name: countries[number],  bundle: .main))
+                                    .rotation3DEffect(.degrees(animation360), axis: (x: 0, y: 1, z: 0))
+                                    .opacity((flagSelected == number || flagSelected == -1) ? 3: 0.25)
+                                    .animation(.default, value: flagSelected)
+                                    .scaleEffect((flagSelected == number || flagSelected == -1) ? 1: 0.75)
+                                    
+                                    
                                 
                             }
                             
